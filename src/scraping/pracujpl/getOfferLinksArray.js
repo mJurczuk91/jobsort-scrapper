@@ -1,25 +1,21 @@
 import puppeteer from 'puppeteer';
 import skipCookies from './skipCookies.js';
 import skipPopup from './skipPopup.js';
+import { delay } from '../../lib.js';
 
-export default async function getOfferLinksArray(url) {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-    });
+export default async function getOfferLinksArray(browser, url) {
 
     const page = await browser.newPage();
 
-    await page.goto(mainUrl, {
+    await page.goto(url, {
         waitUntil: "domcontentloaded",
     });
-    
+    await delay(2000);
     await skipPopup(page);
+    await delay(2000);
     await skipCookies(page);
 
-    await page.waitForNavigation({
-        waitUntil: 'networkidle0',
-    });
+    await delay(1000);
 
     const offerLinksArray = await page.evaluate(() => {
         return Array.from(document.querySelectorAll('[data-test="link-offer"]'))
@@ -28,8 +24,8 @@ export default async function getOfferLinksArray(url) {
                 return link;
             });
     });
+    console.log(offerLinksArray);
 
-    await browser.close();
     return offerLinksArray;
 }
 

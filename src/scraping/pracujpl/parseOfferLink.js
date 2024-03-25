@@ -1,13 +1,7 @@
-import puppeteer from "puppeteer";
 import skipCookies from "./skipCookies.js";
 import { delay } from "../../lib.js";
 
-export default async function parseOfferLink(link){
-
-    const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: null,
-    });
+export default async function parseOfferLink(browser, link){
 
     const page = await browser.newPage();
 
@@ -18,12 +12,12 @@ export default async function parseOfferLink(link){
     await skipCookies(page);
     await delay(3000);
 
-    const jobTitle = await getJobTitle(page, link);
-    const technologies = await getTechnologies(page, link);
-    const responsibilities = await getResponsibilities(page, link);
-    const requirements = await getRequirements(page, link);
-    const optionalRequirements = await getOptionalRequirements(page, link);
-    const description = await getAbout(page, link);
+    const jobTitle = await getJobTitle(page, link) ?? '';
+    const technologies = await getTechnologies(page, link) ?? '';
+    const responsibilities = await getResponsibilities(page, link) ?? '';
+    const requirements = await getRequirements(page, link) ?? '';
+    const optionalRequirements = await getOptionalRequirements(page, link) ?? '';
+    const description = await getAbout(page, link) ?? '';
 
     return {
         "Job title: ": jobTitle,
