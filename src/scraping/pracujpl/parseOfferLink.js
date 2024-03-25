@@ -19,7 +19,6 @@ export default async function parseOfferLink(link){
     await delay(3000);
 
     const jobTitle = await getJobTitle(page, link);
-    const benefits = await getBenefits(page, link);
     const technologies = await getTechnologies(page, link);
     const responsibilities = await getResponsibilities(page, link);
     const requirements = await getRequirements(page, link);
@@ -28,7 +27,6 @@ export default async function parseOfferLink(link){
 
     return {
         "Job title: ": jobTitle,
-        "Benefits: ": benefits,
         "Job description: ": description,
         "Required technologies: ": technologies,
         "Responsibilities: ": responsibilities,
@@ -114,7 +112,7 @@ async function getRequirements(page, link) {
 async function getOptionalRequirements(page, link) {
     try{
         return await page.evaluate(() => {
-            return Array.from(document.querySelectorAll('[data-test="section-requirements-expected"] li p'))
+            return Array.from(document.querySelectorAll('[data-test="section-requirements-optional"] li p'))
             .map(req => req.textContent);
         })
     } catch(e){
