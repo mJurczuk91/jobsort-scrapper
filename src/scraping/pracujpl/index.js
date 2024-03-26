@@ -13,6 +13,7 @@ const techLookedFor = [
     'typescript',
     'node',
     'react',
+    'script',
 ]
 
 export default async function parsePracujpl(){
