@@ -13,12 +13,12 @@ export default async function parseOfferLink(browser, link){
     await delay(2000);
 
     const offer = {
-        title: await getJobTitle(page, link) ?? '',
-        description: await getAbout(page, link) ?? '',
-        technologies: await getTechnologies(page, link) ?? '',
-        responsibilities: await getResponsibilities(page, link) ?? '',
-        requirements: await getRequirements(page, link) ?? '',
-        optionalRequirements: await getOptionalRequirements(page, link) ?? '',
+        title: await getJobTitle(page) ?? '',
+        description: await getAbout(page) ?? '',
+        technologies: await getTechnologies(page) ?? '',
+        responsibilities: await getResponsibilities(page) ?? '',
+        requirements: await getRequirements(page) ?? '',
+        optionalRequirements: await getOptionalRequirements(page) ?? '',
     }
 
     await page.close();
@@ -26,7 +26,7 @@ export default async function parseOfferLink(browser, link){
     return !offer.title && !offer.description && !offer.technologies && !offer.responsibilities && !offer.requirements && !offer.optionalRequirements ? null : offer;
 }
 
-async function getJobTitle(page, link) {
+async function getJobTitle(page) {
     try{
         return await page.evaluate(() => {
             return document.querySelector('[data-scroll-id="job-title"]').textContent;
@@ -36,7 +36,7 @@ async function getJobTitle(page, link) {
     }
 }
 
-async function getBenefits(page, link) {
+async function getBenefits(page) {
     try{
         return await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-offerHeader"] .offer-viewXo2dpV'))
@@ -47,7 +47,7 @@ async function getBenefits(page, link) {
     }
 }
 
-async function getTechnologies(page, link) {
+async function getTechnologies(page) {
     try{
         return await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-technologies-expected"] li p'))
@@ -58,7 +58,7 @@ async function getTechnologies(page, link) {
     }
 }
 
-async function getResponsibilities(page, link) {
+async function getResponsibilities(page) {
     try{
         const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-responsibilities"] li p'))
@@ -75,7 +75,7 @@ async function getResponsibilities(page, link) {
     }
 }
 
-async function getRequirements(page, link) {
+async function getRequirements(page) {
     try{
         const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-requirements-expected"] li p'))
@@ -92,7 +92,7 @@ async function getRequirements(page, link) {
     }
 }
 
-async function getOptionalRequirements(page, link) {
+async function getOptionalRequirements(page) {
     try{
         const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-requirements-optional"] li p'))
@@ -109,7 +109,7 @@ async function getOptionalRequirements(page, link) {
     }
 }
 
-async function getAbout(page, link) {
+async function getAbout(page) {
     try{
         return await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="text-about-project"] p'))
