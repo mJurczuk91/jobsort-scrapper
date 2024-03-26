@@ -60,10 +60,16 @@ async function getTechnologies(page, link) {
 
 async function getResponsibilities(page, link) {
     try{
-        return await page.evaluate(() => {
+        const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-responsibilities"] li p'))
             .map(responsibility => responsibility.textContent);
-        })
+        });
+        if(result.length > 0) return result;
+
+        return await page.evaluate(() => {
+            return Array.from(document.querySelectorAll('[data-test="section-responsibilities"] p'))
+            .map(responsibility => responsibility.textContent);
+        });
     } catch(e){
         return null;
     }
@@ -71,8 +77,14 @@ async function getResponsibilities(page, link) {
 
 async function getRequirements(page, link) {
     try{
-        return await page.evaluate(() => {
+        const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-requirements-expected"] li p'))
+            .map(req => req.textContent);
+        })
+        if(result.length > 0) return result;
+
+        return await page.evaluate(() => {
+            return Array.from(document.querySelectorAll('[data-test="section-requirements-expected"] p'))
             .map(req => req.textContent);
         })
     } catch(e){
@@ -82,8 +94,14 @@ async function getRequirements(page, link) {
 
 async function getOptionalRequirements(page, link) {
     try{
-        return await page.evaluate(() => {
+        const result = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('[data-test="section-requirements-optional"] li p'))
+            .map(req => req.textContent);
+        })
+        if(result.length > 0) return result;
+
+        return await page.evaluate(() => {
+            return Array.from(document.querySelectorAll('[data-test="section-requirements-optional"] p'))
             .map(req => req.textContent);
         })
     } catch(e){
