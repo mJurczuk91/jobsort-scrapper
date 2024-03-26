@@ -1,4 +1,4 @@
-import parsePracujpl from "./pracujpl/parsePracujpl.js"
+import parsePracujpl from "./pracujpl/index.js"
 
 async function scrapeAll () {
     const pracujplOffers = await parsePracujpl();

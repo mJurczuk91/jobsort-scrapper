@@ -10,23 +10,20 @@ export default async function parseOfferLink(browser, link){
     });
 
     await skipCookies(page);
-    await delay(3000);
+    await delay(2000);
 
-    const jobTitle = await getJobTitle(page, link) ?? '';
-    const technologies = await getTechnologies(page, link) ?? '';
-    const responsibilities = await getResponsibilities(page, link) ?? '';
-    const requirements = await getRequirements(page, link) ?? '';
-    const optionalRequirements = await getOptionalRequirements(page, link) ?? '';
-    const description = await getAbout(page, link) ?? '';
-
-    return {
-        "Job title: ": jobTitle,
-        "Job description: ": description,
-        "Required technologies: ": technologies,
-        "Responsibilities: ": responsibilities,
-        "Requirements: ": requirements,
-        "Nice to have: ": optionalRequirements,
+    const offer = {
+        title: await getJobTitle(page, link) ?? '',
+        description: await getAbout(page, link) ?? '',
+        technologies: await getTechnologies(page, link) ?? '',
+        responsibilities: await getResponsibilities(page, link) ?? '',
+        requirements: await getRequirements(page, link) ?? '',
+        optionalRequirements: await getOptionalRequirements(page, link) ?? '',
     }
+
+    await page.close();
+
+    return !offer.title && !offer.description && !offer.technologies && !offer.responsibilities && !offer.requirements && !offer.optionalRequirements ? null : offer;
 }
 
 async function getJobTitle(page, link) {
@@ -35,11 +32,7 @@ async function getJobTitle(page, link) {
             return document.querySelector('[data-scroll-id="job-title"]').textContent;
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse job title section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -50,11 +43,7 @@ async function getBenefits(page, link) {
             .map(benefit => benefit.textContent);
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse benefits section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -65,11 +54,7 @@ async function getTechnologies(page, link) {
             .map(technologyNode => technologyNode.textContent);
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse technologies section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -80,11 +65,7 @@ async function getResponsibilities(page, link) {
             .map(responsibility => responsibility.textContent);
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse responsibilities section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -95,11 +76,7 @@ async function getRequirements(page, link) {
             .map(req => req.textContent);
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse requirements section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -110,11 +87,7 @@ async function getOptionalRequirements(page, link) {
             .map(req => req.textContent);
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse optional requirements section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
 
@@ -129,10 +102,6 @@ async function getAbout(page, link) {
             });
         })
     } catch(e){
-        throw new Error(JSON.stringify({
-            message: 'Error trying to parse about section',
-            date: new Date().getTime(),
-            link,
-        }))
+        return null;
     }
 }
