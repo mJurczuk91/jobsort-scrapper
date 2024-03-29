@@ -15,7 +15,6 @@ export function parsePracujplDateToIso8601(date) {
 
 function monthToNumber(month) {
     const monthLower = month.toLowerCase();
-    console.log('month to lower', monthLower);
 
     if (monthLower === 'jan' || monthLower === 'sty') return '01';
     if (monthLower === 'feb' || monthLower === 'lut') return '02';
