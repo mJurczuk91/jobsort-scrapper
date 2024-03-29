@@ -2,34 +2,37 @@ export function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
-export function parsePracujplDateToIso8601(date){
-        const [day, monthString, year] = date.split(':')[1].split(' ');
-        const monthNum = monthToNumber(monthString);
-    
-        if(!monthNum){
-            return monthNum;
-        }
-    
-        return(`${year}-${monthNum}-${day}`);
+export function parsePracujplDateToIso8601(date) {
+    const [day, monthString, year] = date.split(':')[1].trim().split(' ');
+    const monthNum = monthToNumber(monthString);
+
+    if (!monthNum) {
+        return monthNum;
+    }
+
+    return (`${year}-${monthNum}-${day}`);
 }
 
 function monthToNumber(month) {
-    if(month === 'jan' || month === 'sty') return '01';
-    if(month === 'feb' || month === 'lut') return '02';
-    if(month === 'mar' || month === 'mar') return '03';
-    if(month === 'apr' || month === 'kwi') return '04';
-    if(month === 'may' || month === 'maj') return '05';
-    if(month === 'jun' || month === 'cze') return '06';
-    if(month === 'jul' || month === 'lip') return '07';
-    if(month === 'aug' || month === 'sie') return '08';
-    if(month === 'sep' || month === 'wrz') return '09';
-    if(month === 'oct' || month === 'paź') return '10';
-    if(month === 'nov' || month === 'lis') return '11';
-    if(month === 'dec' || month === 'gru') return '12';
+    const monthLower = month.toLowerCase();
+    console.log('month to lower', monthLower);
+
+    if (monthLower === 'jan' || monthLower === 'sty') return '01';
+    if (monthLower === 'feb' || monthLower === 'lut') return '02';
+    if (monthLower === 'mar' || monthLower === 'mar') return '03';
+    if (monthLower === 'apr' || monthLower === 'kwi') return '04';
+    if (monthLower === 'may' || monthLower === 'maj') return '05';
+    if (monthLower === 'jun' || monthLower === 'cze') return '06';
+    if (monthLower === 'jul' || monthLower === 'lip') return '07';
+    if (monthLower === 'aug' || monthLower === 'sie') return '08';
+    if (monthLower === 'sep' || monthLower === 'wrz') return '09';
+    if (monthLower === 'oct' || monthLower === 'paź') return '10';
+    if (monthLower === 'nov' || monthLower === 'lis') return '11';
+    if (monthLower === 'dec' || monthLower === 'gru') return '12';
 
     return null;
 }
 
-export function logError(error){
+export function logError(error) {
     console.log(JSON.stringify(error));
 }
