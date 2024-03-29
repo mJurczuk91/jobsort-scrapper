@@ -1,8 +1,10 @@
 import parsePracujpl from "./pracujpl/index.js"
+import { evaluateOffersDifficulty } from "../geminiOfferEvaluation.js";
 
 async function scrapeAll () {
     const pracujplOffers = await parsePracujpl();
-    return pracujplOffers;
+    const evaluatedOffers = await evaluateOffersDifficulty(pracujplOffers);
+    return evaluatedOffers;
 }
 
 export const scraper = {

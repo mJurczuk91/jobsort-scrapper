@@ -2,7 +2,7 @@ import parseOfferLink from "./parseOfferLink.js";
 import getOfferLinksArray from "./getOfferLinksArray.js";
 import puppeteer from "puppeteer";
 import { delay } from "../../lib.js";
-import fs from "fs";
+import { logError } from "../../lib.js";
 
 const serachLinks = [
     'https://www.pracuj.pl/praca/junior%20javascript;kw',
@@ -19,7 +19,7 @@ const techLookedFor = [
 export default async function parsePracujpl(){
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null,
     });
 
@@ -69,9 +69,10 @@ export default async function parsePracujpl(){
                 parsed,
             });
 
-            !parsed && logError(
-                `error parsing link ${link} on ${new Date().toLocaleDateString()}`
-            );
+            !parsed && logError({
+                message: `error parsing link ${link}`,
+                date: new Date().toLocaleDateString(),
+            });
         }
         catch(e){
             logError(e);
@@ -81,8 +82,4 @@ export default async function parsePracujpl(){
     
     await browser.close();
     return parsedOffers;
-}
-
-function logError(error){
-    fs.appendFile('pracujplParsingErrors.json', JSON.stringify(error), ()=>null);
 }
