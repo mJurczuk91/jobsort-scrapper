@@ -1,5 +1,6 @@
 import skipCookies from "./skipCookies.js";
 import { delay } from "../../lib.js";
+import { parsePracujplDateToIso8601 } from "../../lib.js";
 
 export default async function parseOfferLink(browser, link){
 
@@ -19,11 +20,24 @@ export default async function parseOfferLink(browser, link){
         responsibilities: await getResponsibilities(page) ?? '',
         requirements: await getRequirements(page) ?? '',
         optionalRequirements: await getOptionalRequirements(page) ?? '',
+        offerValidDate: await getOfferValidDate(page) ?? '',
     }
 
     await page.close();
 
     return !offer.title && !offer.description && !offer.technologies && !offer.responsibilities && !offer.requirements && !offer.optionalRequirements ? null : offer;
+}
+
+
+async function getOfferValidDate(page){
+    try{
+        const date = await page.evaluate(() => {
+            return document.querySelector('[data-test="sections-benefit-expiration"] .offer-viewDZ0got').textContent;
+        });
+        return parsePracujplDateToIso8601(date);
+    } catch(e){
+        return null;
+    }
 }
 
 async function getJobTitle(page) {
