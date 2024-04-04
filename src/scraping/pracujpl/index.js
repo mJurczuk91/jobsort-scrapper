@@ -6,6 +6,8 @@ import { logError } from "../../lib.js";
 
 const serachLinks = [
     'https://www.pracuj.pl/praca/junior%20javascript;kw',
+    'https://www.pracuj.pl/praca/junior%20react;kw',
+    'https://www.pracuj.pl/praca/junior%20web%20developer;kw',
 ];
 
 const techLookedFor = [
