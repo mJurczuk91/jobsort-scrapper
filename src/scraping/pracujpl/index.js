@@ -1,7 +1,7 @@
 import parseOfferLink from "./parseOfferLink.js";
 import getOfferLinksArray from "./getOfferLinksArray.js";
 import puppeteer from "puppeteer";
-import { delay } from "../../lib.js";
+import { checkIfLinkIsInDatabase, delay } from "../../lib.js";
 import { logError } from "../../lib.js";
 
 const serachLinks = [
@@ -46,9 +46,18 @@ export default async function parsePracujpl(){
     }
 
     const parsedOffers = [];
-
+    console.log('Links before parsing: ', finalOfferLinks.length);
+    let linksAlreadyInDBCount = 0;
+    let wrongTechCount = 0;
+    const wrongTechLinks = [];
     for(let link of finalOfferLinks){
         try{
+            const exists = await await checkIfLinkIsInDatabase(link);
+            if(exists){
+                linksAlreadyInDBCount++;
+                continue;
+            }
+
             await delay(3000);
             let parsed = await parseOfferLink(browser, link);
 
@@ -63,6 +72,8 @@ export default async function parsePracujpl(){
                         return true;
                     }
                 }
+                wrongTechCount++;
+                wrongTechLinks.push(link);
                 return false;
             }) && parsedOffers.push({
                 link,
@@ -73,13 +84,15 @@ export default async function parsePracujpl(){
                 message: `error parsing link ${link}`,
                 date: new Date().toLocaleDateString(),
             });
-        }
+        }        
         catch(e){
             logError(e);
             continue;
         }
     }
-    
+    console.log('Links already in db: ', linksAlreadyInDBCount);
+    console.log('Links skipped due to wrong tech stack: ', wrongTechCount);
+    console.log(wrongTechLinks);
     await browser.close();
     return parsedOffers;
 }
