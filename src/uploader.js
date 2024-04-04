@@ -10,7 +10,6 @@ export const uploadOffer = async (offer) => {
 
     const normalizedOffer = normalizeOffer(offer);
 
-    console.log(normalizedOffer);
     const customHeaders = {
         "Content-Type": "application/json",
         "key": process.env.API_KEY,

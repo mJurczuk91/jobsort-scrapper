@@ -58,31 +58,35 @@ export default async function parsePracujpl(){
                 continue;
             }
 
-            await delay(3000);
             let parsed = await parseOfferLink(browser, link);
 
             if(!parsed){
-                await delay(6000);
+                await delay(3000);
                 parsed = await parseOfferLink(browser, link);
             }
 
-            parsed && parsed.technologies.some(offerTech => {
+            if(!parsed){
+                continue;
+            }
+            
+            const correctTechStack = parsed.technologies && parsed.technologies.some(offerTech => {
                 for(let tech of techLookedFor){
                     if(offerTech.toLowerCase().includes(tech)){
                         return true;
                     }
                 }
-                wrongTechCount++;
-                wrongTechLinks.push(link);
                 return false;
-            }) && parsedOffers.push({
-                link,
-                parsed,
             });
 
-            !parsed && logError({
-                message: `error parsing link ${link}`,
-                date: new Date().toLocaleDateString(),
+            if(!correctTechStack){
+                wrongTechCount++;
+                wrongTechLinks.push(link);
+                continue;
+            }
+            
+            parsedOffers.push({
+                link,
+                parsed,
             });
         }        
         catch(e){

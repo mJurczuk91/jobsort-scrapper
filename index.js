@@ -2,6 +2,8 @@ import { scraper } from "./src/scraping/scraper.js";
 import fs from 'fs'
 import { configDotenv } from "dotenv";
 import { uploadOffer } from "./src/uploader.js";
+import parseOfferLink from "./src/scraping/pracujpl/parseOfferLink.js";
+import puppeteer from "puppeteer";
 configDotenv();
 
 const array = await scraper.scrapeAll();
@@ -14,4 +16,3 @@ fs.appendFile("output.txt", JSON.stringify(array), (err) => {
 for(let offer of array){
     await uploadOffer(offer);
 }
-

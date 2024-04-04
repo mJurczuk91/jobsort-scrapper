@@ -58,7 +58,6 @@ function escapeSingleQuotes(string){
 }
 
 export function normalizeOffer(offer){
-    console.log(offer);
     const result = {};
     if(offer.link){
         result.link = offer.link;
