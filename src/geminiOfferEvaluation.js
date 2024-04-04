@@ -49,11 +49,11 @@ export async function evaluateOffersDifficulty(offers) {
 
 async function evaluateOfferDifficulty(generativeModel, offer) {
 
-  const task = `You will get a programming job offer in a json format. Read it and respond with the following information in json format: 
-  isJuniorFriendly - true or false depending on your evaluation of the offer, if the offer requires a year or less of experience consider it a junior friendly job, 
+  const task = `You will get a programming job offer in a json format. Read it and respond with the following information: 
+  isJuniorFriendly - true or false depending on your evaluation of the offer, if the offer requires a year (12 months) or less experience consider it a junior friendly job, 
   noExperienceRequired - true or false true if the offer requires none or minimal experience,
   shortDescription: a short description of the offer
-  It is very important that all 3 required fields are present in the response and in this exact order
+  It is very important that all 3 required fields are present in the response and in this exact order.
   The response should look like this: 
   {
     isJuniorFriendly: your response

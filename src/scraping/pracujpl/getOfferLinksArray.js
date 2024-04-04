@@ -22,8 +22,6 @@ export default async function getOfferLinksArray(browser, url) {
             });
     });
     
-    console.log(offerLinksArray.length);
-
     return offerLinksArray;
 }
 
