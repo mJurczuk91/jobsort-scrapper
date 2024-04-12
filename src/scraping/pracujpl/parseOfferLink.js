@@ -37,6 +37,7 @@ async function getOfferValidDate(page){
         return parsePracujplDateToIso8601(date);
     } catch(e){
         const date = new Date();
+        date.setDate(date.getDate()+1);
         return (`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`);
     }
 }
