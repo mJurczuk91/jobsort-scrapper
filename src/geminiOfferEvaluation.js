@@ -54,7 +54,7 @@ async function evaluateOfferDifficulty(generativeModel, offer) {
   noExperienceRequired - true or false true if the offer requires none or minimal experience,
   shortDescription: a short description of the offer
   It is very important that all 3 required fields are present in the response and in this exact order.
-  The response should look like this: 
+  The response should be structured like this: 
   {
     isJuniorFriendly: your response
     noExperienceRequired: your response
