@@ -92,7 +92,7 @@ export default async function parsePracujpl(){
             });
         }        
         catch(e){
-            logError(e);
+            logError(`Parsing link ${link} failed`);
             continue;
         }
     }
