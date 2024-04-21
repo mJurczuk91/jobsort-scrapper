@@ -1,4 +1,4 @@
-import skipCookies from "./skipCookies.js";
+import skipCookies from "../util/skipCookies.js";
 import { delay } from "../../lib.js";
 import { parsePracujplDateToIso8601 } from "../../lib.js";
 
