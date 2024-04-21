@@ -18,7 +18,7 @@ const techLookedFor = [
     'script',
 ]
 
-export default async function parsePracujpl(){
+export default async function scrapePracujpl(){
 
     const browser = await puppeteer.launch({
         headless: true,
