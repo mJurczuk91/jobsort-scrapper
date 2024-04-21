@@ -12,8 +12,6 @@ export default async function getOfferLinksArray(browser, url) {
     await skipPopup(page);
     await skipCookies(page);
 
-    await delay(3000);
-
     const offerLinksArray = await page.evaluate(() => {
         return Array.from(document.querySelectorAll('[data-test="link-offer"]'))
             .map(href => {
