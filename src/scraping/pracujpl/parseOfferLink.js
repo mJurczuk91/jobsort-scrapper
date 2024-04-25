@@ -2,15 +2,11 @@ import skipCookies from "../util/skipCookies.js";
 import { delay } from "../../lib.js";
 import { parsePracujplDateToIso8601 } from "../../lib.js";
 
-export default async function parseOfferLink(browser, link){
-
-    const page = await browser.newPage();
+export default async function parseOfferLink(page, link){
 
     await page.goto(link, {
-        waitUntil: "networkidle0",
+        waitUntil: "domcontentloaded",
     });
-
-    await skipCookies(page);
     await delay(2000);
 
     const offer = {
@@ -22,8 +18,6 @@ export default async function parseOfferLink(browser, link){
         optionalRequirements: await getOptionalRequirements(page) ?? '',
         offerValidDate: await getOfferValidDate(page) ?? '',
     }
-
-    await page.close();
 
     return !offer.title && !offer.description && !offer.technologies && !offer.responsibilities && !offer.requirements && !offer.optionalRequirements ? null : offer;
 }

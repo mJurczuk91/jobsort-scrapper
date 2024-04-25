@@ -1,10 +1,13 @@
 import parseOfferLink from "./parseOfferLink.js";
-import getOfferLinksArray from "./getOfferLinksArray.js";
 import puppeteer from "puppeteer";
 import { checkIfLinkIsInDatabase, delay } from "../../lib.js";
 import { logError } from "../../lib.js";
+import searchResultsParser from "./searchResultsParser.js";
+import scrapeOfferLinks from "../util/scrapeOfferLinks.js";
+import skipPopup from "./skipPopup.js";
+import skipCookies from "../util/skipCookies.js";
 
-const serachLinks = [
+const searchLinks = [
     'https://www.pracuj.pl/praca/junior%20javascript;kw',
     'https://www.pracuj.pl/praca/junior%20react;kw',
     'https://www.pracuj.pl/praca/junior%20web%20developer;kw',
@@ -21,54 +24,46 @@ const techLookedFor = [
 export default async function scrapePracujpl(){
 
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: null,
     });
 
-    const finalOfferLinks = [];
+    const page = await browser.newPage()
+    await page.goto('https://www.pracuj.pl', {
+        waitUntil: "domcontentloaded",
+    });
+    await delay(2000);
+    await skipCookies(page, '[data-test="button-submitCookie"]');
+    await delay(3000);
 
-    for(let link of serachLinks){
-        const partialOfferLinkArray = await getOfferLinksArray(browser, link);
+    const offers = await scrapeOfferLinks(page, searchLinks, searchResultsParser);
 
-        if(partialOfferLinkArray.length === 0) {
-            console.log('No links found while parsing ', link);
-            return;
-        }
-
-        for(let offerLink of partialOfferLinkArray){
-            if(!finalOfferLinks.find(link => link === offerLink)){
-                finalOfferLinks.push(offerLink);
-            }
-        };
-    }
-
-    if(finalOfferLinks.length === 0){
+    if(offers.length === 0){
         console.log('no offers found in parsepracujpl');
         return;
     }
 
     const parsedOffers = [];
-    console.log('Links before parsing: ', finalOfferLinks.length);
+    console.log('Links before parsing: ', offers.length);
     let linksAlreadyInDBCount = 0;
     let wrongTechCount = 0;
     const wrongTechLinks = [];
-    for(let link of finalOfferLinks){
-        try{
-            const exists = await await checkIfLinkIsInDatabase(link);
+    for(let link of offers){
+        const exists = await await checkIfLinkIsInDatabase(link);
             if(exists){
                 linksAlreadyInDBCount++;
                 continue;
             }
 
-            let parsed = await parseOfferLink(browser, link);
+            let parsed = await parseOfferLink(page, link);
 
             if(!parsed){
                 await delay(3000);
-                parsed = await parseOfferLink(browser, link);
+                parsed = await parseOfferLink(page, link);
             }
 
             if(!parsed){
-                continue;
+                throw new Error(`Parsing link ${link} failed`);
             }
             
             const correctTechStack = parsed.technologies && parsed.technologies.some(offerTech => {
@@ -90,6 +85,8 @@ export default async function scrapePracujpl(){
                 link,
                 parsed,
             });
+        try{
+            
         }        
         catch(e){
             logError(`Parsing link ${link} failed`);
@@ -99,6 +96,7 @@ export default async function scrapePracujpl(){
     console.log('Links already in db: ', linksAlreadyInDBCount);
     console.log('Links skipped due to wrong tech stack: ', wrongTechCount);
     console.log(wrongTechLinks);
+    await page.close();
     await browser.close();
     return parsedOffers;
 }
