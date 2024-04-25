@@ -25,7 +25,7 @@ const techLookedFor = [
 export default async function scrapePracujpl() {
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null,
     });
 
@@ -33,7 +33,6 @@ export default async function scrapePracujpl() {
     await page.goto('https://www.pracuj.pl', {
         waitUntil: "domcontentloaded",
     });
-    
     await skipCookies(page, '[data-test="button-submitCookie"]');
 
     const offerLinks = await scrapeOfferLinks(page, searchLinks, searchResultsParser);
