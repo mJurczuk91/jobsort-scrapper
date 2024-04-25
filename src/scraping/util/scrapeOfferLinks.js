@@ -1,15 +1,15 @@
 import { delay } from "../../lib.js";
 
-export default async function scrapeOfferLinks(page, searchResultsArr, offerLinkParser){
+export default async function scrapeOfferLinks(page, searchResultsUrlArr, searchResultsParser){
     const finalOfferLinks = [];
     
-    for(let link of searchResultsArr){ 
+    for(let link of searchResultsUrlArr){ 
         await page.goto(link, {
             waitUntil: "domcontentloaded",
         });
-        await delay(4000);
+        await delay(3000);
 
-        const partialOfferLinkArray = await offerLinkParser(page);
+        const partialOfferLinkArray = await searchResultsParser(page);
         if(partialOfferLinkArray.length === 0) {
             continue;
         }
