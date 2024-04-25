@@ -1,13 +1,13 @@
 import { checkIfLinkIsInDatabase } from "../../lib.js";
 import { logError } from "../../lib.js";
 
-export default async function parseOfferArray(offers, domainName, techLookedFor, page, offerParser) {
+export default async function parseOfferArray(offerLinks, domainName, techLookedFor, page, offerParser) {
     const parsedOffers = [];
-    console.log(`Total ${domainName} offers: ${offers.length}`);
+    console.log(`Total ${domainName} offers: ${offerLinks.length}`);
     let linksAlreadyInDBCount = 0;
     let wrongTechCount = 0;
     const wrongTechLinks = [];
-    for (let link of offers) {
+    for (let link of offerLinks) {
         const exists = await await checkIfLinkIsInDatabase(link);
             if (exists) {
                 linksAlreadyInDBCount++;
@@ -52,6 +52,7 @@ export default async function parseOfferArray(offers, domainName, techLookedFor,
             continue;
         }
     }
+    console.log(`${domainName} parsing finished`);
     console.log(`${domainName} links already in db: ${linksAlreadyInDBCount}`);
     console.log(`${domainName} links skipped due to wrong tech stack: ${wrongTechCount}`);
     console.log(wrongTechLinks);
