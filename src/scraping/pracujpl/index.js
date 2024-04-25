@@ -33,9 +33,8 @@ export default async function scrapePracujpl() {
     await page.goto('https://www.pracuj.pl', {
         waitUntil: "domcontentloaded",
     });
-    await delay(1000);
+    
     await skipCookies(page, '[data-test="button-submitCookie"]');
-    await delay(2000);
 
     const offerLinks = await scrapeOfferLinks(page, searchLinks, searchResultsParser);
     if (offerLinks.length === 0) {
@@ -47,6 +46,6 @@ export default async function scrapePracujpl() {
 
     await page.close();
     await browser.close();
-    
+
     return parsedOffers;
 }
