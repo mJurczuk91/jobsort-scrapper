@@ -3,7 +3,7 @@ import { delay } from "../../lib.js";
 export default async function scrapeOfferLinks(page, searchResultsUrlArr, searchResultsParser){
     const finalOfferLinks = [];
     
-    for(let link of searchResultsUrlArr){ 
+    for(let link of searchResultsUrlArr){
         await page.goto(link, {
             waitUntil: "domcontentloaded",
         });

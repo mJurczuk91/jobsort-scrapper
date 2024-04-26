@@ -1,7 +1,7 @@
 import { checkIfLinkIsInDatabase } from "../../lib.js";
 import { logError } from "../../lib.js";
 
-export default async function parseOfferArray(offerLinks, domainName, techLookedFor, page, offerParser) {
+export default async function parseOfferLinkArray(offerLinks, domainName, techLookedFor, page, offerParser) {
     const parsedOffers = [];
     console.log(`Total ${domainName} offers: ${offerLinks.length}`);
     let linksAlreadyInDBCount = 0;
