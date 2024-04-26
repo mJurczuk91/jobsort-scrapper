@@ -4,7 +4,7 @@ import { logError } from "../../lib.js";
 import searchResultsParser from "./searchResultsParser.js";
 import scrapeOfferLinks from "../util/scrapeOfferLinks.js";
 import skipCookies from "../util/skipCookies.js";
-import parseOfferArray from "../util/parseOfferArray.js";
+import parseOfferLinkArray from "../util/parseOfferLinkArray.js";
 
 const searchLinks = [
     'https://www.pracuj.pl/praca/junior%20javascript;kw',
@@ -39,7 +39,7 @@ export default async function scrapePracujpl() {
         return [];
     }
 
-    const parsedOffers = await parseOfferArray(offerLinks, 'pracuj.pl', techLookedFor, page, parseOfferLink);
+    const parsedOffers = await parseOfferLinkArray(offerLinks, 'pracuj.pl', techLookedFor, page, parseOfferLink);
 
     await page.close();
     await browser.close();
