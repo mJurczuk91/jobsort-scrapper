@@ -1,5 +1,5 @@
 import { checkIfLinkIsInDatabase } from "../../lib.js";
-import { logError } from "../../lib.js";
+import { logError, delay } from "../../lib.js";
 
 export default async function parseOfferLinkArray(offerLinks, domainName, techLookedFor, page, offerParser) {
     const parsedOffers = [];

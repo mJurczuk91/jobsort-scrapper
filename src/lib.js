@@ -54,6 +54,7 @@ export function logError(error) {
 }
 
 function escapeSingleQuotes(string){
+    if(!string) return 'SOMETHING WENT WRONG'
     return string.replaceAll(`'`, `''`);
 }
 
