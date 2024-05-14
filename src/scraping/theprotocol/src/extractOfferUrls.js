@@ -1,5 +1,3 @@
-import { delay } from "../../../lib.js";
-
 export default async function extractOfferUrls(page) {
     const offerLinksArray = await page.evaluate(() => {
         return Array.from(document.querySelectorAll('[data-test="list-item-offer"]'))

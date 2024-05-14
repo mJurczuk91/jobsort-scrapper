@@ -1,21 +1,33 @@
-import { delay } from "../../../lib.js";
+import { delay, logError } from "../../../lib.js";
+import getMissingOfferFields from "../../util/getMissingOfferFields.js";
 
-export default async function parseOffer(page, link) {
-    await page.goto(link, {
+export default async function parseOffer(page, url) {
+    await page.goto(url, {
         waitUntil: "domcontentloaded",
     });
     await delay(2000);
 
     const offer = {
-        title: await getJobTitle(page) ?? '',
-        description: await getJobDescription(page) ?? '',
-        technologies: await getTechnologies(page) ?? '',
-        responsibilities: await getResponsibilities(page) ?? '',
-        requirements: await getRequirements(page) ?? '',
-        optionalRequirements: await getOptionalRequirements(page) ?? '',
-        offerValidDate: await getOfferValidDate(page) ?? '',
+        title: await getJobTitle(page),
+        description: await getJobDescription(page),
+        technologies: await getTechnologies(page),
+        responsibilities: await getResponsibilities(page),
+        requirements: await getRequirements(page),
+        optionalRequirements: await getOptionalRequirements(page),
+        offerValidDate: await getOfferValidDate(page),
     }
-    return !offer.title && !offer.description && !offer.technologies && !offer.responsibilities && !offer.requirements && !offer.optionalRequirements ? null : offer;
+
+    const requiredFields = [
+        'technologies', 
+        'offerValidDate', 
+        'requirements',
+    ];
+
+    if(getMissingOfferFields(offer, requiredFields)){
+        throw new Error((`offer ${url} missing required fields: ${missingFields.join(', ')}`));
+    }
+    
+    return offer;
 }
 
 async function getJobTitle(page) {
@@ -146,5 +158,4 @@ async function getSectionTextContent(page, sectionId) {
     } else if (result.length === 0) {
         return undefined;
     } else return result;
-
 }
