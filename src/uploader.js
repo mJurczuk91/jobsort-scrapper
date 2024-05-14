@@ -1,4 +1,4 @@
-import { normalizeOffer } from "./lib.js";
+//import { normalizeOffer } from "./lib.js";
 
 export const uploadOffer = async (offer) => {
     if(!process.env.API_KEY){
@@ -7,8 +7,6 @@ export const uploadOffer = async (offer) => {
     if(!process.env.API_URL){
         throw new Error('API URL ENV NOT SET');
     }
-
-    const normalizedOffer = normalizeOffer(offer);
 
     const customHeaders = {
         "Content-Type": "application/json",
@@ -20,7 +18,7 @@ export const uploadOffer = async (offer) => {
     const response = await fetch(url, {
         method: "POST",
         headers: customHeaders,
-        body: JSON.stringify(normalizedOffer),
+        body: offer,
     });
     return response.ok;
 }

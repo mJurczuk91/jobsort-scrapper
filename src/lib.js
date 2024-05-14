@@ -20,9 +20,10 @@ export async function checkIfLinkIsInDatabase(link){
 }
 
 export function parsePracujplDateToIso8601(date) {
-    const [day, monthString, year] = date.split(':')[1].trim().split(' ');
+    const [,day, monthString, year] = date.split(' ');
+    console.log(date.split(' '));
     const monthNum = monthToNumber(monthString);
-
+    console.log(monthNum, day, year);
     if (!monthNum) {
         return monthNum;
     }
@@ -53,7 +54,7 @@ export function logError(error) {
     console.log(JSON.stringify(error));
 }
 
-function escapeSingleQuotes(string){
+/* function escapeSingleQuotes(string){
     if(!string) return 'SOMETHING WENT WRONG'
     return string.replaceAll(`'`, `''`);
 }
@@ -93,4 +94,4 @@ export function normalizeOffer(offer){
         result.noExperienceRequired = offer.noExperienceRequired;
     }
     return result;
-}
+} */

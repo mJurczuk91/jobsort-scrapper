@@ -1,4 +1,4 @@
-import { delay } from "../../lib.js";
+import { delay } from "../../../lib.js";
 
 export default async function skipPopup(page) {
     const popupCloseSelector = '.popup_p1c6glb0';

@@ -1,33 +1,13 @@
-import skipCookies from "../util/skipCookies.js";
-import { delay } from "../../lib.js";
-
 export default async function searchResultsParser(page) {
-    
-    const urlsToEvaluate = !!await page.$('[Aria-label="Paginacja"]')
-        ? await page.evaluate(() => {
-            return (
-                Array.from(document.querySelectorAll('[data-test="anchor-pageNumber"]'))
-                .map(pageNumber => pageNumber.href)
-            )})
-        : [url]
-
-    const offerLinksArray = [];
-    for (let link of urlsToEvaluate) {
-        if (page.url() !== link) {
-            await page.goto(link, {
-                waitUntil: "domcontentloaded"
+    const offerLinksArray = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('[data-test="list-item-offer"]'))
+            .map(href => {
+                return href.getAttribute('href');
             });
-            await delay(4000);
-        }
-
-        const partialLinks = await page.$$eval(
-            '[data-test="list-item-offer"]',
-            array => array.map(
-                a => a.href
-            ),
-        )
-        offerLinksArray.push(...partialLinks);
-    }
-
-    return offerLinksArray;
+    });
+    
+    return offerLinksArray.map(href => {
+        const host = new URL(page.url()).host;
+        return `https://${host}${href}`
+    });
 }

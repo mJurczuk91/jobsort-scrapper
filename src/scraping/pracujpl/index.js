@@ -1,48 +1,33 @@
-import parseOfferLink from "./parseOfferLink.js";
-import puppeteer from "puppeteer";
-import { logError } from "../../lib.js";
-import searchResultsParser from "./searchResultsParser.js";
-import scrapeOfferLinks from "../util/scrapeOfferLinks.js";
+import parseOffer from "./src/parseOffer.js";
+import extractOfferUrls from "./src/extractOfferUrls.js";
+import parseOfferUrlRepository from "../util/parseOfferUrlRepository.js";
 import skipCookies from "../util/skipCookies.js";
-import parseOfferLinkArray from "../util/parseOfferLinkArray.js";
+import parseOfferUrlArray from "../util/parseOfferUrlArray.js";
 
-const searchLinks = [
+const offerUrlRepositories = [
     'https://www.pracuj.pl/praca/junior%20javascript;kw',
     'https://www.pracuj.pl/praca/junior%20react;kw',
     'https://www.pracuj.pl/praca/junior%20web%20developer;kw',
-];
-
-const techLookedFor = [
-    'javascript',
-    'typescript',
-    'node',
-    'react',
-    'script',
 ]
 
-export default async function scrapePracujpl() {
-
-    const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: null,
-    });
-
-    const page = await browser.newPage()
+export default async function scrapePracujpl(techLookedFor, page) {
     await page.goto('https://www.pracuj.pl', {
         waitUntil: "domcontentloaded",
     });
     await skipCookies(page, '[data-test="button-submitCookie"]');
 
-    const offerLinks = await scrapeOfferLinks(page, searchLinks, searchResultsParser);
-    if (offerLinks.length === 0) {
-        logError('no offers found in parsepracujpl');
-        return [];
+    //const offerUrlArray = ['https://www.pracuj.pl/praca/junior-qa-automation-engineer-katowice-wroclawska-54,oferta,1003308393'];
+    const offerUrlArray = [];
+    //const offerUrlArray = await parseOfferUrlRepository(page, offerUrlRepositories, extractOfferUrls);
+    if (offerUrlArray.length === 0) {
+        const message = 'no offers found in parsepracujpl';
+        //throw new Error('bum')
+        return Promise.reject(message);
     }
 
-    const parsedOffers = await parseOfferLinkArray(offerLinks, 'pracuj.pl', techLookedFor, page, parseOfferLink);
-
-    await page.close();
-    await browser.close();
-
+    const parsedOffers = await parseOfferUrlArray(offerUrlArray, 'pracuj.pl', techLookedFor, page, parseOffer);
     return parsedOffers;
 }
+
+
+
