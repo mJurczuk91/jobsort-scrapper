@@ -1,6 +1,6 @@
-import { delay } from "../../lib.js";
+import { delay } from "../../../lib.js";
 
-export default async function offerParser(page, link) {
+export default async function parseOffer(page, link) {
     await page.goto(link, {
         waitUntil: "domcontentloaded",
     });

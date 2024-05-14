@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import scrapePracujpl from "./pracujpl/index.js"
+import scrapeTheprotocol from "./theprotocol/index.js";
 import { logError } from "../lib.js";
 
 async function scrapeAll() {
@@ -8,18 +9,27 @@ async function scrapeAll() {
         defaultViewport: null,
     });
 
-    const scrapers = [{
-        name: 'pracujpl',
-        scrape: async (page) => {
-            return await scrapePracujpl(
-                page,
-            );
-        }
-    },
+    const scrapers = [
+/*         {
+            name: 'pracujpl',
+            scrape: async (page) => {
+                return await scrapePracujpl(
+                    page,
+                );
+            }
+        }, */
+        {
+            name: 'theprotocol.it',
+            scrape: async (page) => {
+                return await scrapeTheprotocol(
+                    page,
+                );
+            }
+        },
     ]
 
     const pages = new Map();
-    for(let scraper of scrapers){
+    for (let scraper of scrapers) {
         const page = await browser.newPage();
         pages.set(
             scraper.name,
@@ -27,19 +37,19 @@ async function scrapeAll() {
         )
     }
 
-/*     const offers = await scrapers[0].scrape(
-        pages.get(scrapers[0].name)
-    ); */
+         const offers = await scrapers[0].scrape(
+            pages.get(scrapers[0].name)
+        ); 
 
-    const offers = await Promise.allSettled(
+/*     const offers = await Promise.allSettled(
         scrapers.map(scraper => {
             return new Promise(async (resolve, reject) => {
-                try{
+                try {
                     const result = await scraper.scrape(
                         pages.get(scraper.name)
                     )
                     resolve(result)
-                } catch (e){
+                } catch (e) {
                     reject(`scraper ${scraper.name} failed, ${e.message ?? e}`);
                 } finally {
                     pages.get(scraper.name).close();
@@ -48,16 +58,16 @@ async function scrapeAll() {
             })
         })
     )
-    .then(results => results.map(promiseResult => {
-        if(promiseResult.status === 'rejected'){
-            logError(promiseResult);
-            return [];
-        }
-        return promiseResult.value;
-    }))
-    .finally(async () => {
-        await browser.close()
-    });
+        .then(results => results.map(promiseResult => {
+            if (promiseResult.status === 'rejected') {
+                logError(promiseResult);
+                return [];
+            }
+            return promiseResult.value;
+        }))
+        .finally(async () => {
+            await browser.close()
+        }); */
 
     if (offers.flat().length === 0) {
         logError({
