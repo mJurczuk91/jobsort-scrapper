@@ -18,7 +18,6 @@ export default async function parseOfferUrlArray(offerUrls, domainName, page, pa
         });
 
         if (!parsed) {
-            logError(`couldnt parse ${url}`)
             continue;
         }
 
