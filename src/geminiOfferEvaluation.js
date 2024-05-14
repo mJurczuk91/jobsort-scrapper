@@ -1,8 +1,6 @@
-import { delay } from "./lib.js";
-import { VertexAI, HarmCategory, HarmBlockThreshold } from "@google-cloud/vertexai";
-import { logError } from "./lib.js";
+import { VertexAI } from "@google-cloud/vertexai";
 
-export async function evaluateOffersDifficulty(offers) {
+export async function evaluateAllOffers(offers) {
   const project = 'ai-jobseeker-actual';
   const location = 'us-central1';
   const textModel = 'gemini-1.0-pro';
@@ -49,7 +47,15 @@ async function evaluateOfferDifficulty(generativeModel, offer) {
   const result = await generativeModel.generateContent(request);
   const response = result.response;
   try {
-    return JSON.parse(response.candidates[0].content.parts[0].text);
+    const parsed = JSON.parse(response.candidates[0].content.parts[0].text);
+    if(
+      parsed.isJuniorFriendly === undefined ||
+      parsed.noExperienceRequired === undefined ||
+      parsed.shortDescription === undefined
+    ) {
+      return null
+    }
+    return parsed; 
   } catch (e) {
     return null;
   }
