@@ -10,7 +10,7 @@ const offerUrlRepositories = [
     'https://www.pracuj.pl/praca/junior%20web%20developer;kw',
 ]
 
-export default async function scrapePracujpl(techLookedFor, page) {
+export default async function scrapePracujpl(page) {
     await page.goto('https://www.pracuj.pl', {
         waitUntil: "domcontentloaded",
     });
@@ -25,7 +25,7 @@ export default async function scrapePracujpl(techLookedFor, page) {
         return Promise.reject(message);
     }
 
-    const parsedOffers = await parseOfferUrlArray(offerUrlArray, 'pracuj.pl', techLookedFor, page, parseOffer);
+    const parsedOffers = await parseOfferUrlArray(offerUrlArray, 'pracuj.pl', page, parseOffer);
     return parsedOffers;
 }
 

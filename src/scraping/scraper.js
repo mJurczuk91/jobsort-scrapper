@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import scrapePracujpl from "./pracujpl/index.js"
 import { logError } from "../lib.js";
 
-async function scrapeAll(techLookedFor) {
+async function scrapeAll() {
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: null,
@@ -12,7 +12,6 @@ async function scrapeAll(techLookedFor) {
         name: 'pracujpl',
         scrape: async (page) => {
             return await scrapePracujpl(
-                techLookedFor,
                 page,
             );
         }
