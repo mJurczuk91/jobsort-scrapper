@@ -16,12 +16,9 @@ export default async function scrapePracujpl(page) {
     });
     await skipCookies(page, '[data-test="button-submitCookie"]');
 
-    //const offerUrlArray = ['https://www.pracuj.pl/praca/junior-qa-automation-engineer-katowice-wroclawska-54,oferta,1003308393'];
-    const offerUrlArray = [];
-    //const offerUrlArray = await parseOfferUrlRepository(page, offerUrlRepositories, extractOfferUrls);
+    const offerUrlArray = await parseOfferUrlRepository(page, offerUrlRepositories, extractOfferUrls);
     if (offerUrlArray.length === 0) {
         const message = 'no offers found in parsepracujpl';
-        //throw new Error('bum')
         return Promise.reject(message);
     }
 

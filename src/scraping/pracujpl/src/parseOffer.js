@@ -1,4 +1,5 @@
-import { delay, logError } from "../../../lib.js";
+import { delay } from "../../../lib.js";
+import getMissingOfferFields from "../../util/getMissingOfferFields.js";
 
 export default async function parseOffer(page, url) {
 
@@ -25,7 +26,7 @@ export default async function parseOffer(page, url) {
     
     const missingFields = getMissingOfferFields(offer, requiredFields);
     if (missingFields) {
-        return Promise.reject((`offer ${url} missing required fields: ${missingFields.join(', ')}`))
+        throw new Error((`offer ${url} missing required fields: ${missingFields.join(', ')}`));
     }
 
     return offer;
@@ -173,17 +174,4 @@ function monthToNumber(month) {
     if (monthLower === 'december' || monthLower === 'grudnia') return '12';
 
     return null;
-}
-
-function getMissingOfferFields(offer, requiredFields){
-    let missingFieldsArr = [];
-    for(let field of requiredFields){
-        if(!offer[field]){
-            missingFieldsArr.push(field);
-        }
-    }
-    if(missingFieldsArr.length === 0) {
-        return null;
-    }
-    return missingFieldsArr;
 }
