@@ -10,14 +10,14 @@ async function scrapeAll() {
     });
 
     const scrapers = [
-/*         {
+        {
             name: 'pracujpl',
             scrape: async (page) => {
                 return await scrapePracujpl(
                     page,
                 );
             }
-        }, */
+        },
         {
             name: 'theprotocol.it',
             scrape: async (page) => {
@@ -37,11 +37,11 @@ async function scrapeAll() {
         )
     }
 
-         const offers = await scrapers[0].scrape(
+    /*     const offers = await scrapers[0].scrape(
             pages.get(scrapers[0].name)
-        ); 
+        ); */
 
-/*     const offers = await Promise.allSettled(
+    const offers = await Promise.allSettled(
         scrapers.map(scraper => {
             return new Promise(async (resolve, reject) => {
                 try {
@@ -67,7 +67,7 @@ async function scrapeAll() {
         }))
         .finally(async () => {
             await browser.close()
-        }); */
+        });
 
     if (offers.flat().length === 0) {
         logError({
