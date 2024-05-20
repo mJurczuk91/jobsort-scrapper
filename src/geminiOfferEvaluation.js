@@ -18,14 +18,22 @@ export async function evaluateAllOffers(offers) {
 
   const processedOffers = [];
   for (let offer of offers) {
-    const evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
-    if (evaluated) {
-      processedOffers.push({
-        link: offer.link,
-        ...offer.parsed,
-        ...evaluated,
-      });
+    let evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
+
+    if(!evaluated) {
+      evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
     }
+
+    if(!evaluated) {
+      continue;
+    }
+
+    processedOffers.push({
+      link: offer.link,
+      ...offer.parsed,
+      ...evaluated,
+    });
+    
   }
   return processedOffers;
 }
