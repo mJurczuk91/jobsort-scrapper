@@ -3,6 +3,7 @@ import fs from 'fs'
 import { configDotenv } from "dotenv";
 import { uploadOffer } from "./src/uploader.js";
 import { evaluateAllOffers } from "./src/geminiOfferEvaluation.js"; 
+import { logError } from "./src/lib.js";
 
 configDotenv();
 
@@ -11,13 +12,10 @@ const techLookedFor = [
     'typescript',
     'node',
     'react',
-    'java script',
-    'type script',
 ];
 
 const jobOffers = await scraper.scrapeAll(techLookedFor);
 console.log('scraped offers: ', jobOffers.length);
-
 
 
 const correctTechOffers = jobOffers.filter(
@@ -35,5 +33,13 @@ fs.appendFile("output.txt", JSON.stringify(jobOffers), (err) => {
 });
 
 for (let offer of evaluatedOffers) {
-    await uploadOffer(offer);
+    if(!offer.isJuniorFriendly && !offer.noExperienceRequired){
+        continue;
+    }
+    const success = await uploadOffer(offer);
+    if(!success){
+        logError(`Failed to upload offer: `);
+        console.log(offer);
+        console.log(JSON.stringify(offer));
+    }
 } 

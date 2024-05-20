@@ -18,7 +18,7 @@ export const uploadOffer = async (offer) => {
     const response = await fetch(url, {
         method: "POST",
         headers: customHeaders,
-        body: offer,
+        body: JSON.stringify(offer),
     });
     return response.ok;
 }

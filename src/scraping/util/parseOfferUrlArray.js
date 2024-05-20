@@ -21,10 +21,12 @@ export default async function parseOfferUrlArray(offerUrls, domainName, page, pa
             continue;
         }
 
-        parsedOffers.push({
-            url,
+        const offer = {
+            link: url,
             parsed,
-        });
+        }
+
+        parsedOffers.push(offer);
     }
 
     console.log(`${domainName} parsing finished`);
