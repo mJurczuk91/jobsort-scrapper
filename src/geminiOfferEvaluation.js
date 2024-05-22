@@ -30,8 +30,8 @@ export async function evaluateAllOffers(offers) {
 
     processedOffers.push({
       link: offer.link,
-      ...offer.parsed,
-      ...evaluated,
+      parsed: offer.parsed,
+      evaluated,
     });
     
   }

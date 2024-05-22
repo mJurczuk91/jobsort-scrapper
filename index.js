@@ -36,10 +36,16 @@ for (let offer of evaluatedOffers) {
     if(!offer.isJuniorFriendly && !offer.noExperienceRequired){
         continue;
     }
-    const success = await uploadOffer(offer);
+    const success = await uploadOffer({
+        url: offer.link,
+        description: offer.evaluated.shortDescription,
+        technologies: offer.parsed.technologies,
+        isJuniorFriendly: offer.evaluated.isJuniorFriendly,
+        noExperienceRequired: offer.evaluated.noExperienceRequired,
+        offerValidDate: offer.parsed.offerValidDate,
+    });
     if(!success){
         logError(`Failed to upload offer: `);
         console.log(offer);
-        console.log(JSON.stringify(offer));
     }
 } 

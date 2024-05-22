@@ -1,4 +1,4 @@
-//import { normalizeOffer } from "./lib.js";
+import { logError } from "./lib.js";
 
 export const uploadOffer = async (offer) => {
     if(!process.env.API_KEY){
@@ -20,5 +20,8 @@ export const uploadOffer = async (offer) => {
         headers: customHeaders,
         body: JSON.stringify(offer),
     });
+    if(!response.ok){
+        logError(`Failed to upload offer ${JSON.stringify(offer)}`);
+    }
     return response.ok;
 }
