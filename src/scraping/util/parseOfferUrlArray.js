@@ -14,7 +14,8 @@ export default async function parseOfferUrlArray(offerUrls, domainName, page, pa
 
         let parsed = await parseOfferFn(page, url)
         .catch((e) => {
-            logError(e);
+            logError(e.message);
+            logError(e.stack);
         });
 
         if (!parsed) {
