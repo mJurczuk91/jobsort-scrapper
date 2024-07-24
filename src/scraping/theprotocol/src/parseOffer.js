@@ -23,7 +23,8 @@ export default async function parseOffer(page, url) {
         'requirements',
     ];
 
-    if(getMissingOfferFields(offer, requiredFields)){
+    const missingFields = getMissingOfferFields(offer, requiredFields);
+    if(missingFields){
         throw new Error((`offer ${url} missing required fields: ${missingFields.join(', ')}`));
     }
     
