@@ -33,8 +33,8 @@ fs.appendFile("output.txt", JSON.stringify(jobOffers), (err) => {
 });
 
 for (let offer of evaluatedOffers) {
-    if(!offer.evaluated.isJuniorFriendly && !offer.evaluated.noExperienceRequired){
-        logError(`Offer ${JSON.stringify(offer)} missing isJuniorFriendly or noExperienceRequired`);
+    if(offer.evaluated.isJuniorFriendly === undefined || offer.evaluated.noExperienceRequired === undefined){
+        logError(`Offer ${JSON.stringify(offer)} not evaluated properly (noexperiencerequired or isjuniorfriendly are undefined)`);
         continue;
     }
     const success = await uploadOffer({
