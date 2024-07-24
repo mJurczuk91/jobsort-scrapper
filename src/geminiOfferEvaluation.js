@@ -1,4 +1,5 @@
 import { VertexAI } from "@google-cloud/vertexai";
+import { delay } from "./lib.js";
 
 export async function evaluateAllOffers(offers) {
   const project = 'ai-jobseeker-actual';
@@ -21,6 +22,7 @@ export async function evaluateAllOffers(offers) {
     let evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
 
     if(!evaluated) {
+      delay(5000); // wait so i dont exceed gcloud api quotas
       evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
     }
 
@@ -34,6 +36,7 @@ export async function evaluateAllOffers(offers) {
       evaluated,
     });
     
+    delay(5000); // wait so i dont exceed gcloud api quotas
   }
   return processedOffers;
 }
