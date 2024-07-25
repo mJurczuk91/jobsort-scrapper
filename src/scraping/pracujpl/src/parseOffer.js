@@ -21,7 +21,6 @@ export default async function parseOffer(page, url) {
     const requiredFields = [
         'technologies', 
         'offerValidDate', 
-        'requirements',
     ];
     
     const missingFields = getMissingOfferFields(offer, requiredFields);
