@@ -56,7 +56,7 @@ async function getJobDescription(page) {
 async function getTechnologies(page) {
     try {
         const technologies = await page.$eval(
-            '[data-test="section-technologies"] .Container_cv2t83c',
+            '[data-test="section-technologies"] .c1uektcw',
             (node) => {
                 const result = [];
                 const spans = node.querySelectorAll('[data-test="chip-technology"] span');
