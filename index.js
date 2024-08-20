@@ -2,38 +2,25 @@ import { scraper } from "./src/scraping/scraper.js";
 import fs from 'fs'
 import { configDotenv } from "dotenv";
 import { uploadOffer } from "./src/uploader.js";
-import { evaluateAllOffers } from "./src/geminiOfferEvaluation.js"; 
+import { evaluateOfferArray } from "./src/geminiOfferEvaluation.js";
 import { logError } from "./src/lib.js";
 
 configDotenv();
 
-const techLookedFor = [
-    'javascript',
-    'typescript',
-    'node',
-    'react',
-];
-
-const jobOffers = await scraper.scrapeAll(techLookedFor);
+const jobOffers = await scraper.scrapeAll();
 console.log('scraped offers: ', jobOffers.length);
+fs.appendFile("scraped.txt", JSON.stringify(jobOffers), (err) => {
+    err && fs.appendFile("err.txt", JSON.stringify(err).concat(new Date().toLocaleDateString()), () => { })
+});
 
-
-const correctTechOffers = jobOffers.filter(
-    offer => offer.parsed.technologies && offer.parsed.technologies.some(offerTech => {
-        return techLookedFor.some(lookedFor => lookedFor === offerTech.toLowerCase());
-    })
-)
-console.log('correct tech offers: ', correctTechOffers.length);
-
-const evaluatedOffers = await evaluateAllOffers(correctTechOffers);
+const evaluatedOffers = await evaluateOfferArray(correctTechOffers);
 console.log('evaluated offers: ', evaluatedOffers.length);
-
-fs.appendFile("output.txt", JSON.stringify(jobOffers), (err) => {
+fs.appendFile("evaluated.txt", JSON.stringify(evaluatedOffers), (err) => {
     err && fs.appendFile("err.txt", JSON.stringify(err).concat(new Date().toLocaleDateString()), () => { })
 });
 
 for (let offer of evaluatedOffers) {
-    if(offer.evaluated.isJuniorFriendly === undefined || offer.evaluated.noExperienceRequired === undefined){
+    if (offer.evaluated.isJuniorFriendly === undefined || offer.evaluated.noExperienceRequired === undefined) {
         logError(`Offer ${JSON.stringify(offer)} not evaluated properly (noexperiencerequired or isjuniorfriendly are undefined)`);
         continue;
     }
@@ -45,7 +32,7 @@ for (let offer of evaluatedOffers) {
         noExperienceRequired: offer.evaluated.noExperienceRequired,
         offerValidDate: offer.parsed.offerValidDate,
     });
-    if(!success){
+    if (!success) {
         logError(`Failed to upload offer: `);
         console.log(offer);
     }
