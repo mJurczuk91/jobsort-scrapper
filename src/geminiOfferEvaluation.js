@@ -1,10 +1,10 @@
 import { VertexAI } from "@google-cloud/vertexai";
 import { delay } from "./lib.js";
 
-export async function evaluateAllOffers(offers) {
+export async function evaluateOfferArray(offers) {
   const project = 'ai-jobseeker-actual';
   const location = 'us-central1';
-  const textModel = 'gemini-1.0-pro';
+  const textModel = 'gemini-1.5-pro-001';
 
   const vertex_ai = new VertexAI({ project: project, location: location });
 
@@ -19,14 +19,18 @@ export async function evaluateAllOffers(offers) {
 
   const processedOffers = [];
   for (let offer of offers) {
+    console.log(`\n evaluating offer ${offer.link} \n`)
     let evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
 
     if(!evaluated) {
-      delay(5000); // wait so i dont exceed gcloud api quotas
+      const delaySeconds = 61;
+      await delay(delaySeconds * 1000); // wait so i dont exceed gcloud api quotas
+      console.log(`waiting ${delaySeconds} and retrying evaluation`);
       evaluated = await evaluateOfferDifficulty(generativeModel, offer.parsed);
     }
 
     if(!evaluated) {
+      console.log(`Failed to evaluate ${offer.link}\n`);
       continue;
     }
 
@@ -35,15 +39,13 @@ export async function evaluateAllOffers(offers) {
       parsed: offer.parsed,
       evaluated,
     });
-    
-    delay(5000); // wait so i dont exceed gcloud api quotas
   }
   return processedOffers;
 }
 
 async function evaluateOfferDifficulty(generativeModel, offer) {
-  const task = `You will get a programming job offer in a json format. Respond with a json object containing following three fields: 
-  isJuniorFriendly - true or false depending on your evaluation of the offer, if the offer requires a year (12 months) or less experience consider it a junior friendly job, 
+  const task = `Evaluate this job offer. Respond with a json object containing following three fields: 
+  isJuniorFriendly - true or false depending on if the job might be suitable for novice programmers, 
   noExperienceRequired - true or false true if the offer requires none or minimal experience,
   shortDescription: a short description of the offer`
 
@@ -55,7 +57,14 @@ async function evaluateOfferDifficulty(generativeModel, offer) {
     }],
   }
 
-  const result = await generativeModel.generateContent(request);
+  let result;
+  try {
+    result = await generativeModel.generateContent(request);
+  } catch (e) {
+    console.log(e);
+    console.log('genai error\n')
+    return null;
+  }
   const response = result.response;
   try {
     const parsed = JSON.parse(response.candidates[0].content.parts[0].text);
@@ -64,10 +73,12 @@ async function evaluateOfferDifficulty(generativeModel, offer) {
       parsed.noExperienceRequired === undefined ||
       parsed.shortDescription === undefined
     ) {
+      console.log('ai response incomplete\n');
       return null
     }
     return parsed; 
   } catch (e) {
+    console.log('error while parsing response');
     return null;
   }
 }
